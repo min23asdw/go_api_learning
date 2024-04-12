@@ -26,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	store := store.NewStore(db)
-	api := NewAPIServer(":3000", store)
+	s := store.NewStore(db)
+	api := store.NewAPIServer(":3000", s)
 	api.Serve()
 }
