@@ -1,8 +1,8 @@
-package store
+package models
 
 import "time"
 
-type Task_model struct {
+type Task struct {
 	ID           int64     `json:"id"`
 	Name         string    `json:"name"`
 	Status       string    `json:"status"`

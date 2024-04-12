@@ -1,4 +1,4 @@
-package main
+package main_test
 
 import (
 	"bytes"
@@ -8,15 +8,15 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/min23asdw/go_api_learning/pkg/models"
 	"github.com/min23asdw/go_api_learning/pkg/store"
-	"github.com/min23asdw/go_api_learning/pkg/utils"
 )
 
 func TestCreateTask(t *testing.T) {
 	ms := &MockStore{}
 	service := store.NewTasksService(ms)
 	t.Run("should return error if name is empty", func(t *testing.T) {
-		payload := &store.Task_model{
+		payload := &models.Task{
 			Name: "",
 		}
 
@@ -41,7 +41,7 @@ func TestCreateTask(t *testing.T) {
 			t.Errorf("expected status code %d, got %d", http.StatusBadRequest, rr.Code)
 		}
 
-		var response utils.ErrorResponse
+		var response models.ErrorResponse
 		err = json.NewDecoder(rr.Body).Decode(&response)
 		if err != nil {
 			t.Fatal(err)
@@ -52,7 +52,7 @@ func TestCreateTask(t *testing.T) {
 		}
 	})
 	t.Run("should create a task", func(t *testing.T) {
-		payload := &store.Task_model{
+		payload := &models.Task{
 			Name:         "A",
 			ProjectID:    1,
 			AssignedToID: 42,

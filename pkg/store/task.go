@@ -7,6 +7,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/min23asdw/go_api_learning/pkg/auth"
+	"github.com/min23asdw/go_api_learning/pkg/models"
 	"github.com/min23asdw/go_api_learning/pkg/utils"
 )
 
@@ -23,7 +25,7 @@ func NewTasksService(s Store) *TasksService {
 }
 
 func (s *TasksService) RegisterRoutes(r *mux.Router) {
-	r.HandleFunc("/tasks", s.HandleCreateTask).Methods("POST")
+	r.HandleFunc("/tasks", auth.WithJWTAuth(s.HandleCreateTask, s.store)).Methods("POST")
 	r.HandleFunc("/tasks/{id}", s.HandleGetTask).Methods("GET")
 }
 
@@ -38,24 +40,24 @@ func (s *TasksService) HandleCreateTask(w http.ResponseWriter, r *http.Request) 
 
 	defer r.Body.Close()
 
-	var task *Task_model
+	var task *models.Task
 	//  parse !!!  and check it can parse
 	err = json.Unmarshal(body, &task)
 	if err != nil {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.ErrorResponse{Error: "Invalid request payload"})
+		utils.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid request payload"})
 		return
 	}
 
 	// check it not emtry
 	if err := validateTaskPayload(task); err != nil {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.ErrorResponse{Error: err.Error()})
+		utils.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
 
 	t, err := s.store.CreateTask(task)
 	// can't CreateTask
 	if err != nil {
-		utils.WriteJSON(w, http.StatusInternalServerError, utils.ErrorResponse{Error: "Error creating task"})
+		utils.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Error creating task"})
 		return
 	}
 	//everything OK
@@ -68,14 +70,14 @@ func (s *TasksService) HandleGetTask(w http.ResponseWriter, r *http.Request) {
 
 	//just for safety
 	if id == "" {
-		utils.WriteJSON(w, http.StatusInternalServerError, utils.ErrorResponse{Error: "id is required"})
+		utils.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "id is required"})
 		return
 	}
 
 	t, err := s.store.GetTask(id)
 
 	if err != nil {
-		utils.WriteJSON(w, http.StatusInternalServerError, utils.ErrorResponse{Error: "task not found"})
+		utils.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "task not found"})
 		return
 	}
 
@@ -83,7 +85,7 @@ func (s *TasksService) HandleGetTask(w http.ResponseWriter, r *http.Request) {
 	utils.WriteJSON(w, http.StatusOK, t)
 }
 
-func validateTaskPayload(task *Task_model) error {
+func validateTaskPayload(task *models.Task) error {
 	if task.Name == "" {
 		return ErrNameRequired
 	}
