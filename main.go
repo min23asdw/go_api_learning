@@ -4,7 +4,8 @@ import (
 	"log"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/min23asdw/go_api_learning/store"
+	"github.com/min23asdw/go_api_learning/pkg/api"
+	"github.com/min23asdw/go_api_learning/pkg/store"
 )
 
 func main() {
@@ -27,6 +28,6 @@ func main() {
 	}
 
 	s := store.NewStore(db)
-	api := store.NewAPIServer(":3000", s)
+	api := api.NewAPIServer(":3000", s)
 	api.Serve()
 }

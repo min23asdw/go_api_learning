@@ -8,7 +8,8 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
-	"github.com/min23asdw/go_api_learning/store"
+	"github.com/min23asdw/go_api_learning/pkg/store"
+	"github.com/min23asdw/go_api_learning/pkg/utils"
 )
 
 func TestCreateTask(t *testing.T) {
@@ -32,7 +33,7 @@ func TestCreateTask(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router := mux.NewRouter()
 
-		router.HandleFunc("/tasks", service.handleCreateTask)
+		router.HandleFunc("/tasks", service.HandleCreateTask)
 
 		router.ServeHTTP(rr, req)
 
@@ -40,14 +41,14 @@ func TestCreateTask(t *testing.T) {
 			t.Errorf("expected status code %d, got %d", http.StatusBadRequest, rr.Code)
 		}
 
-		var response store.ErrorResponse
+		var response utils.ErrorResponse
 		err = json.NewDecoder(rr.Body).Decode(&response)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if response.Error != store.errNameRequired.Error() {
-			t.Errorf("expected error message %s, got %s", response.Error, store.errNameRequired.Error())
+		if response.Error != store.ErrNameRequired.Error() {
+			t.Errorf("expected error message %s, got %s", response.Error, store.ErrNameRequired.Error())
 		}
 	})
 	t.Run("should create a task", func(t *testing.T) {
@@ -70,7 +71,7 @@ func TestCreateTask(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router := mux.NewRouter()
 
-		router.HandleFunc("/tasks", service.handleCreateTask)
+		router.HandleFunc("/tasks", service.HandleCreateTask)
 
 		router.ServeHTTP(rr, req)
 
@@ -105,7 +106,7 @@ func TestGetTask(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router := mux.NewRouter()
 
-		router.HandleFunc("/tasks/{id}", service.handleGetTask)
+		router.HandleFunc("/tasks/{id}", service.HandleGetTask)
 
 		router.ServeHTTP(rr, req)
 

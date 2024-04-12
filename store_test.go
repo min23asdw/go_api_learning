@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/min23asdw/go_api_learning/store"
+	"github.com/min23asdw/go_api_learning/pkg/store"
 )
 
 // Mocks
