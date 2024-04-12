@@ -1,11 +1,10 @@
-package main
+package config
 
 import (
 	"fmt"
 	"os"
 )
 
-// Global var ?
 var Envs = initConfig()
 
 type Config struct {

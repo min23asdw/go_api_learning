@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/min23asdw/go_api_learning/config"
 	"github.com/min23asdw/go_api_learning/pkg/api"
 	"github.com/min23asdw/go_api_learning/pkg/store"
 )
@@ -11,10 +12,10 @@ import (
 func main() {
 	log.Println("Starting")
 	cfg := mysql.Config{
-		User:                 Envs.DBUser,
-		Passwd:               Envs.DBPassword,
-		Addr:                 Envs.DBAddress,
-		DBName:               Envs.DBName,
+		User:                 config.Envs.DBUser,
+		Passwd:               config.Envs.DBPassword,
+		Addr:                 config.Envs.DBAddress,
+		DBName:               config.Envs.DBName,
 		Net:                  "tcp",
 		AllowNativePasswords: true,
 		ParseTime:            true,
