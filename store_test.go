@@ -1,5 +1,9 @@
 package main
 
+import (
+	"github.com/min23asdw/go_api_learning/store"
+)
+
 // Mocks
 
 type MockStore struct{}
@@ -24,11 +28,11 @@ func (s *MockStore) CreateUser() error {
 // 	return &User{}, nil
 // }
 
-func (s *MockStore) CreateTask(t *Task_model) (*Task_model, error) {
-	return &Task_model{}, nil
+func (s *MockStore) CreateTask(t *store.Task_model) (*store.Task_model, error) {
+	return &store.Task_model{}, nil
 }
 
 // GetTask implements Store.
-func (s *MockStore) GetTask(id string) (*Task_model, error) {
-	return &Task_model{}, nil
+func (s *MockStore) GetTask(id string) (*store.Task_model, error) {
+	return &store.Task_model{}, nil
 }

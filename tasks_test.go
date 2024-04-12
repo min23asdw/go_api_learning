@@ -8,13 +8,14 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/min23asdw/go_api_learning/store"
 )
 
 func TestCreateTask(t *testing.T) {
 	ms := &MockStore{}
-	service := NewTasksService(ms)
+	service := store.NewTasksService(ms)
 	t.Run("should return error if name is empty", func(t *testing.T) {
-		payload := &Task_model{
+		payload := &store.Task_model{
 			Name: "",
 		}
 
@@ -39,18 +40,18 @@ func TestCreateTask(t *testing.T) {
 			t.Errorf("expected status code %d, got %d", http.StatusBadRequest, rr.Code)
 		}
 
-		var response ErrorResponse
+		var response store.ErrorResponse
 		err = json.NewDecoder(rr.Body).Decode(&response)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if response.Error != errNameRequired.Error() {
-			t.Errorf("expected error message %s, got %s", response.Error, errNameRequired.Error())
+		if response.Error != store.errNameRequired.Error() {
+			t.Errorf("expected error message %s, got %s", response.Error, store.errNameRequired.Error())
 		}
 	})
 	t.Run("should create a task", func(t *testing.T) {
-		payload := &Task_model{
+		payload := &store.Task_model{
 			Name:         "A",
 			ProjectID:    1,
 			AssignedToID: 42,
@@ -92,7 +93,7 @@ func TestCreateTask(t *testing.T) {
 
 func TestGetTask(t *testing.T) {
 	ms := &MockStore{}
-	service := NewTasksService(ms)
+	service := store.NewTasksService(ms)
 
 	t.Run("get task by id", func(t *testing.T) {
 

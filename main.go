@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/min23asdw/go_api_learning/store"
 )
 
 func main() {
@@ -25,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	store := NewStore(db)
+	store := store.NewStore(db)
 	api := NewAPIServer(":3000", store)
 	api.Serve()
 }
