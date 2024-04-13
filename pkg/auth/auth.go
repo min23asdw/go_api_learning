@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/min23asdw/go_api_learning/config"
 	"github.com/min23asdw/go_api_learning/pkg/models"
 	"github.com/min23asdw/go_api_learning/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
@@ -28,7 +28,6 @@ func WithJWTAuth(handlerFunc http.HandlerFunc, store Store) http.HandlerFunc {
 		//call the handler func and continue to the endpoint
 
 		tokenString := utils.GetTokenFromRequest(r)
-
 		token, err := validateJWT(tokenString)
 		if err != nil {
 			log.Printf("failed to validate token: %v", err)
@@ -69,7 +68,7 @@ func CreateJWT(secret []byte, userID int64) (string, error) {
 		return "", err
 	}
 
-	return tokenString, err
+	return tokenString, nil
 }
 
 func HashPassword(password string) (string, error) {
@@ -82,7 +81,7 @@ func HashPassword(password string) (string, error) {
 }
 
 func validateJWT(tokenString string) (*jwt.Token, error) {
-	secret := os.Getenv("JWT_SECRET")
+	secret := config.Envs.JWTSecret
 
 	return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

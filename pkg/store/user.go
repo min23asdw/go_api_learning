@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/min23asdw/go_api_learning/config"
+	"github.com/min23asdw/go_api_learning/pkg/auth"
 	"github.com/min23asdw/go_api_learning/pkg/models"
 	"github.com/min23asdw/go_api_learning/pkg/utils"
 )
@@ -51,7 +52,7 @@ func (s *UserService) handleUserRegister(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	hashedPassword, err := utils.HashPassword(payload.Password)
+	hashedPassword, err := auth.HashPassword(payload.Password)
 	if err != nil {
 		utils.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Error Hash Password"})
 		return
@@ -102,7 +103,7 @@ func validateUserPayload(user *models.User) error {
 
 func createAndSetAuthCookie(userID int64, w http.ResponseWriter) (string, error) {
 	secret := []byte(config.Envs.JWTSecret)
-	token, err := utils.CreateJWT(secret, userID)
+	token, err := auth.CreateJWT(secret, userID)
 	if err != nil {
 		return "", err
 	}
