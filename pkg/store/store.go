@@ -44,7 +44,16 @@ func (s *Storage) CreateUser(u *models.User) (*models.User, error) {
 }
 
 func (s *Storage) CreateTask(t *models.Task) (*models.Task, error) {
-	rows, err := s.db.Exec("INSERT INTO tasks (name, status, project_id, assigned_to) VALUES (?, ?, ?, ?)", t.Name, t.Status, t.ProjectID, t.AssignedToID)
+	var maxID int
+	err := s.db.QueryRow("SELECT MAX(id) FROM tasks").Scan(&maxID)
+	if err != nil {
+		// handle error
+	}
+
+	// Increment id by 1
+	newID := maxID + 1
+	rows, err := s.db.Exec("INSERT INTO projectmanager.tasks ( id , name, projectId, AssignedToID) VALUES (?, ?, ?, ?)", newID, t.Name, t.ProjectID, t.AssignedToID)
+	// INSERT INTO `projectmanager`.`tasks` (`id`, `name`, `projectId`, `AssignedToID`) VALUES ('2', 'mock 2', '1', '8');
 
 	if err != nil {
 		return nil, err
@@ -61,7 +70,7 @@ func (s *Storage) CreateTask(t *models.Task) (*models.Task, error) {
 
 func (s *Storage) GetTask(id string) (*models.Task, error) {
 	var t models.Task
-	err := s.db.QueryRow("SELECT id, name, status, project_id, assigned_to, createdAt FROM tasks WHERE id = ?", id).Scan(&t.ID, &t.Name, &t.Status, &t.ProjectID, &t.AssignedToID, &t.CreatedAt)
+	err := s.db.QueryRow("SELECT * FROM tasks WHERE id = ?", id).Scan(&t.ID, &t.Name, &t.Status, &t.ProjectID, &t.AssignedToID, &t.CreatedAt)
 	return &t, err
 }
 func (s *Storage) GetUserByID(id string) (*models.User, error) {
